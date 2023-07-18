@@ -125,7 +125,12 @@ export const MoveToFolderModal = ({ results, onMoveItems, onDismiss }: Props) =>
 
           <p>Move {thingsMoving} to:</p>
 
-          <FolderPicker allowEmpty={true} enableCreateNew={false} onChange={handleFolderChange} />
+          <FolderPicker
+            allowEmpty={true}
+            enableCreateNew={false}
+            onChange={handleFolderChange}
+            analyticsLocation="old-search-move-modal"
+          />
         </div>
 
         <HorizontalGroup justify="flex-end">

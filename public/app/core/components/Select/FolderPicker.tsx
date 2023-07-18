@@ -5,7 +5,7 @@ import { useAsync } from 'react-use';
 
 import { AppEvents, SelectableValue, GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
-import { config } from '@grafana/runtime';
+import { config, reportInteraction } from '@grafana/runtime';
 import { useStyles2, ActionMeta, Input, InputActionMeta, AsyncVirtualizedSelect } from '@grafana/ui';
 import appEvents from 'app/core/app_events';
 import { t } from 'app/core/internationalization';
@@ -54,7 +54,10 @@ export interface Props {
   skipInitialLoad?: boolean;
   /** The id of the search input. Use this to set a matching label with htmlFor */
   inputId?: string;
+
+  analyticsLocation?: string;
 }
+
 export type SelectedFolder = SelectableValue<string>;
 const VALUE_FOR_ADD = '-10';
 
@@ -77,6 +80,7 @@ export function FolderPicker(props: Props) {
     searchQueryType,
     customAdd,
     folderWarning,
+    analyticsLocation: location,
   } = props;
 
   const rootName = rootNameProp ?? config.featureToggles.nestedFolders ? 'Dashboards' : 'General';
@@ -95,6 +99,12 @@ export function FolderPicker(props: Props) {
       const searchHits = await searchFolders(query, permissionLevel, searchQueryType);
       const resultsAfterMapAndFilter = mapSearchHitsToOptions(searchHits, filter);
       const options: Array<SelectableValue<string>> = resultsAfterMapAndFilter;
+
+      reportInteraction('folder_picker_search_results_loaded', {
+        results: options.length,
+        searchTermLength: query.length,
+        enableCreateNew: Boolean(enableCreateNew),
+      });
 
       const hasAccess =
         contextSrv.hasAccess(AccessControlAction.DashboardsWrite, contextSrv.isEditor) ||
@@ -224,24 +234,28 @@ export function FolderPicker(props: Props) {
   const createNewFolder = useCallback(
     async (folderName: string) => {
       if (folderWarning?.warningCondition(folderName)) {
+        reportInteraction('folder_picker_create_folder_validation_fail', { location });
         return false;
       }
+
       const newFolder = await createFolder({ title: folderName });
       let folder: SelectableValue<string> = { value: '', label: 'Not created' };
 
       if (newFolder.uid) {
+        reportInteraction('folder_picker_create_folder_success', { location });
         appEvents.emit(AppEvents.alertSuccess, ['Folder Created', 'OK']);
         folder = { value: newFolder.uid, label: newFolder.title };
 
         setFolder(newFolder);
         onFolderChange(folder, { action: 'create-option', option: folder });
       } else {
+        reportInteraction('folder_picker_create_folder_fail', { location });
         appEvents.emit(AppEvents.alertError, ['Folder could not be created']);
       }
 
       return folder;
     },
-    [folderWarning, onFolderChange]
+    [folderWarning, location, onFolderChange]
   );
 
   const onKeyDown = useCallback(
@@ -311,7 +325,6 @@ export function FolderPicker(props: Props) {
         <FolderWarningWhenCreating />
         <div className={styles.newFolder}>Press enter to create the new folder.</div>
         <Input
-          aria-label={'aria-label'}
           width={30}
           autoFocus={true}
           value={newFolderValue}

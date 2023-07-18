@@ -63,7 +63,7 @@ export const MoveModal = ({ onConfirm, onDismiss, selectedItems, ...props }: Pro
         {config.featureToggles.nestedFolderPicker ? (
           <NestedFolderPicker value={moveTarget} onChange={handleFolderChange} />
         ) : (
-          <FolderPicker allowEmpty onChange={handleFolderChange} />
+          <FolderPicker allowEmpty onChange={handleFolderChange} analyticsLocation="new-browse-move-modal" />
         )}
       </Field>
 

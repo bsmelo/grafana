@@ -283,6 +283,7 @@ const unifiedAlertList = new PanelPlugin<UnifiedAlertListOptions>(UnifiedAlertLi
             initialFolderUid={props.value?.uid}
             permissionLevel={PermissionLevelString.View}
             onClear={() => props.onChange('')}
+            analyticsLocation="alertlist-panel"
             {...props}
           />
         );

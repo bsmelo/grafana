@@ -75,6 +75,7 @@ export const AddLibraryPanelContents = ({ panel, initialFolderUid, onDismiss }: 
           onChange={({ uid }) => setFolderUid(uid)}
           initialFolderUid={initialFolderUid}
           inputId="share-panel-library-panel-folder-picker"
+          analyticsLocation="add-library-panel-modal"
         />
       </Field>
 

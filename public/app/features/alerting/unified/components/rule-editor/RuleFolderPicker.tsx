@@ -59,6 +59,7 @@ export function RuleFolderPicker(props: RuleFolderPickerProps) {
       permissionLevel={PermissionLevelString.Edit}
       customAdd={customAdd}
       folderWarning={folderWarning}
+      analyticsLocation="alerting-rule-folder-picker"
     />
   );
 }

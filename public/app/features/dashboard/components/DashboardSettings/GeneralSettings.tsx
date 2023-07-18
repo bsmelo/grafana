@@ -120,6 +120,7 @@ export function GeneralSettingsUnconnected({
                 enableCreateNew={true}
                 dashboardId={dashboard.id}
                 skipInitialLoad={true}
+                analyticsLocation="dashboard-general-settings"
               />
             )}
           </Field>

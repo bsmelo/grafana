@@ -82,7 +82,12 @@ export const ImportDashboardForm = ({
       <Field label="Folder">
         <InputControl
           render={({ field: { ref, ...field } }) => (
-            <FolderPicker {...field} enableCreateNew initialFolderUid={initialFolderUid} />
+            <FolderPicker
+              {...field}
+              enableCreateNew
+              initialFolderUid={initialFolderUid}
+              analyticsLocation="import-dashboard"
+            />
           )}
           name="folder"
           control={control}

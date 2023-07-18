@@ -120,6 +120,7 @@ export const SaveDashboardAsForm = ({
                     initialFolderUid={dashboard.meta.folderUid}
                     initialTitle={dashboard.meta.folderTitle}
                     enableCreateNew
+                    analyticsLocation="save-dashboard-form"
                   />
                 )
               }
